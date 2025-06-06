@@ -47,9 +47,19 @@ julia> differential_cross_section(E_in, cos_theta)
 - Schwartz 2014: M.D. Schwartz, "Quantum Field Theory and the Standard Model", Cambridge University Press, New York (2014)
 """
 function differential_cross_section(E_in, cos_theta)
-    #
-    # FIXME: fill me in
-    #
+    alpha = 1 / 137.036  # Fine-structure constant
+    m_e = 0.5109989461  # Electron mass in MeV
+    m_μ = 105.6583745  # Muon mass in MeV
+    ρ_e = _rho(E_in, m_e)
+    ρ_μ = _rho(E_in, m_μ)
+    # Calculate the differential cross section
+    return (alpha^2 / (16 * E_in^6)) * (
+        E_in^4 + ρ_e^2 * ρ_μ^2 * cos_theta^2 + E_in^2 * (m_e^2 + m_μ^2)
+    )
+end
+
+function _rho(E, m)
+    return sqrt(E^2 - m^2)
 end
 
 """
