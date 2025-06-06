@@ -95,9 +95,16 @@ julia> total_cross_section(E_in)
 ```
 """
 function total_cross_section(E_in)
-    #
-    # FIXME: fill me in
-    #
+    alpha = 1 / 137.036  # Fine-structure constant
+    m_e = 0.5109989461  # Electron mass in MeV
+    m_μ = 105.6583745  # Muon mass in MeV
+    ρ_e = _rho(E_in, m_e)
+    ρ_μ = _rho(E_in, m_μ)
+    
+    # Calculate the total cross section
+    return (π * alpha^2 / (8 * E_in^6)) * (ρ_μ / ρ_e) * (
+        2 * E_in^4 + (2 / 3) * ρ_μ^2 * ρ_e^2 + 2 * E_in^2 * (m_μ^2 + m_e^2)
+    )
 end
 
 
