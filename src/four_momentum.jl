@@ -22,18 +22,31 @@ FourMomentum(en = 4.0, x = 1.0, y = 2.0, z = 3.0)
 ```
 """
 struct FourMomentum{T<:Real}
-    #
-    # FIXME: fill me in
-    #
+    en::T;
+    x::T;
+    y::T;
+    z::T;
 end
 # type promotion on construction
 FourMomentum(en,x,y,z) = FourMomentum(promote(en,x,y,z)...)
 
+function Base.isapprox(
+    p1::FourMomentum,
+    p2::FourMomentum;
+    atol::Real=0,
+    rtol::Real=Base.rtoldefault(p1.x, p1.y, atol),
+    nans::Bool=false,
+    norm::Function=abs,
+)
+    return isapprox(p1.en, p2.en; atol=atol, rtol=rtol, nans=nans, norm=norm) &&
+           isapprox(p1.x, p2.x; atol=atol, rtol=rtol, nans=nans, norm=norm) &&
+           isapprox(p1.y, p2.y; atol=atol, rtol=rtol, nans=nans, norm=norm) &&
+           isapprox(p1.z, p2.z; atol=atol, rtol=rtol, nans=nans, norm=norm)
+end
+
 # return the element type
-function Base.eltype(::FourMomentum{T}) where T 
-    #
-    # FIXME:
-    #
+function Base.eltype(::FourMomentum{T}) where T<:Real
+    T
 end
 
 # Overload Base.show for pretty printing of FourMomentum; plain text version
@@ -71,9 +84,7 @@ FourMomentum(en = 6.0, x = 1.5, y = 3.0, z = 4.5)
 ```
 """
 function Base.:+(p1::FourMomentum, p2::FourMomentum) 
-
-    # FIXME: fill me in
-
+    FourMomentum( p1.en + p2.en, p1.x + p2.x, p1.y + p2.y, p1.z + p2.z )
 end
 
 
@@ -98,7 +109,7 @@ FourMomentum(en = 2.0, x = 0.5, y = 1.0, z = 1.5)
 ```
 """ 
 function Base.:-(p1::FourMomentum, p2::FourMomentum) 
-    # FIXME: fill me in
+    FourMomentum( p1.en - p2.en, p1.x - p2.x, p1.y - p2.y, p1.z - p2.z )
 end
 
 
@@ -120,7 +131,7 @@ FourMomentum(en = 8.0, x = 2.0, y = 4.0, z = 6.0)
 ```
 """
 function Base.:*(a::Real, p::FourMomentum) 
-    # FIXME: fill me in
+    FourMomentum( a*p.en, a*p.x, a*p.y, a*p.z )
 end
 
 
@@ -149,13 +160,17 @@ julia> minkowski_dot(p1, p2)
 """
 function minkowski_dot(p1::FourMomentum, p2::FourMomentum)
     # Minkowski metric: (+,-,-,-)
-    # FIXME: fill me in
+    p1.en*p2.en - p1.x*p2.x - p1.y*p2.y - p1.z*p2.z
 end
 
 function _construct_moms_from_coords(E_in, cos_theta, phi)
-    #
-    # FIXME: fill me in
-    #
+    sin_theta = sqrt( 1 - cos_theta^2 );
+    (
+        FourMomentum( E_in/2, 0, 0, 1 ),
+        FourMomentum( E_in/2, 0, 0, -1 ),
+        FourMomentum( E_in/2, sin_theta*cos(phi), sin_theta*sin(phi), cos_theta ),
+        FourMomentum( E_in/2, -sin_theta*cos(phi), -sin_theta*sin(phi), -cos_theta )
+    )
 end
 
 # TODO: 
