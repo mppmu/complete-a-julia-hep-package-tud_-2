@@ -1,6 +1,8 @@
 using HEPExampleProject
 using Random
 using QuadGK
+using Test
+using SafeTestsets
 
 RNG = MersenneTwister(137)
 
